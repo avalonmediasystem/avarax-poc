@@ -18,6 +18,12 @@
 // Required by Blacklight
 //= require blacklight/blacklight
 
-//= require_tree .
-//= require hyrax
 
+//= require hyrax
+//= require almond
+
+//= require avalon/app
+//= require avalon/initialize
+//= require avalon/media_player
+
+//= require example
