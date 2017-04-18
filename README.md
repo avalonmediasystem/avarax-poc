@@ -1,24 +1,13 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Avarax-poc is a hyrax app with next-generation Avalon tooling built as a proof of concept
 
-Things you may want to cover:
+# Getting Started
 
-* Ruby version
+1. Clone this repo: ```git clone https://github.com/avalonmediasystem/avarax-poc.git```
+1. Bundle install: ```bundle install```
+1. Run database migrations: ```bundle exec rake db:migrate```
+1. Start servers: ```bundle exec rake hydra:server```
+1. Generate the default admin set: ```bundle exec rake hyrax:default_admin_set:create```
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+See the [Hyrax README](https://github.com/projecthydra-labs/hyrax#getting-started) for more details on installing dependencies.
