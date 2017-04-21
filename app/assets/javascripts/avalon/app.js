@@ -3,7 +3,7 @@ Avalon = {
     },
 
     mediaPlayer: function(options) {
-	var MediaPlayer = require('avalon/media_player')
+	var MediaPlayer = require('avalon/media-player')
         return new MediaPlayer(options)
     }
 }
