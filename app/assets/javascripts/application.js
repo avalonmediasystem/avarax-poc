@@ -36,8 +36,8 @@ var manifest =
    "type":"Manifest",
    "label":"Beginning Reponsibility: Lunchroom Manners [motion picture] Coronet Films",
    "description":"Lunchroom manners are taught by following a boy through his lunchroom experience",
-   "height":937,
-   "width":1280,
+   "height":360,
+   "width":480,
    "duration":660,
    "content":[
       {
@@ -267,6 +267,10 @@ var manifest =
       }
    ]
 }
+
+
+
+    
 $(document).ready(function() {
     
 var av = Avalon.mediaPlayer({'manifest': manifest, 'target': 'content-wrapper'})
