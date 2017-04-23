@@ -29,5 +29,9 @@ Rails.application.routes.draw do
     end
   end
 
+
+  # For demonstartion purposes, serve a static IIIF-AV manifest
+  get 'demo/iiifav' => 'demo#iiifav'
+  
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
