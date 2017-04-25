@@ -53,7 +53,6 @@ export default class MediaPlayer {
             }
             if (data.hasOwnProperty('members')) {
                 if (this.getMediaFragment(canvasId) !== undefined) {
-                    console.log(canvasId)
                     let mediaFragment = this.getMediaFragment(canvasId)
                     let mediaFragmentUri = this.getVideoUri().id + mediaFragment
                     list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
