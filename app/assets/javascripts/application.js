@@ -29,5 +29,3 @@
 
 
 //= require example
-
-//= require avalon/demo-media-player
