@@ -3,7 +3,7 @@ export default class MediaPlayer {
         this.manifest = options.manifest
         this.target = document.getElementById(options.target)
         this.render()
-        this.bindStructureClick()
+        //this.bindHashChange()
     }
 
     getSubtitles () {
@@ -37,8 +37,15 @@ export default class MediaPlayer {
     getMediaFragment (uri) {
         if (uri !== undefined) {
             const fragment = uri.split('#t=')[1]
-            console.log(fragment)
-            return fragment
+            if (fragment !== undefined) {
+                const splitFragment = fragment.split(',')
+                const duration = splitFragment[1] - splitFragment[0]
+                return { 'start': splitFragment[0],
+                         'stop': splitFragment[1],
+                         'duration': duration * 1000  }
+            } else {
+                return undefined
+            }
         } else {
             return undefined
         }
@@ -47,15 +54,14 @@ export default class MediaPlayer {
     renderStructure (manifest, list, canvasId) {
         // Recurses the manifest structure and creates an html tree 
         manifest.map((data,index) => {
-            console.log(data)
             if (data.type === 'Range') {
                 canvasId = manifest[index].members[0].id
             }
             if (data.hasOwnProperty('members')) {
                 if (this.getMediaFragment(canvasId) !== undefined) {
                     let mediaFragment = this.getMediaFragment(canvasId)
-                    let mediaFragmentUri = this.getVideoUri().id + mediaFragment
-                    list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
+ 
+                    list.push(`<ul><li><a data-turbolinks='false' href="/#t=${mediaFragment.start},${mediaFragment.stop}" name="#t=${mediaFragment.start}.${mediaFragment.stop}" class="media-structure-uri" >${data.label}</a></li>`)
                     this.renderStructure(data.members, list, canvasId)
                 } else {
                     list.push(`<ul><li>${data.label}</li>`)
@@ -67,14 +73,23 @@ export default class MediaPlayer {
         return list.join('')
     }
     
-    bindStructureClick () {
-        document.querySelectorAll('a.media-structure-uri').forEach((el) => { el.addEventListener('click', () => {
-            var mediaFragment = this.getMediaFragment(el.getAttribute('data-media-fragment'))
-            var startSeconds = mediaFragment.split(',')[0]
-            var mediaPlayer = document.getElementById('iiif-av-player')
-            mediaPlayer.setCurrentTime(startSeconds)
-            mediaPlayer.play()
-        }, false) })
+    playFromHash() {
+        var mediaFragment = this.getMediaFragment(window.location.hash)
+        var mediaPlayer = document.getElementById('iiif-av-player')
+        mediaPlayer.setCurrentTime(mediaFragment.start)
+        mediaPlayer.play()
+        setTimeout(() => {
+           mediaPlayer.pause()
+        }, mediaFragment.duration)
+    }
+    
+    bindHashChange () {
+        if (window.location.hash.indexOf('#t=') >= 0) {
+            this.playFromHash()
+        }
+        window.onhashchange = () => {
+            this.playFromHash()
+        }
     }
 
     render (mediaFragment) {
@@ -85,9 +100,11 @@ export default class MediaPlayer {
 </video>`
         const videoStructure = this.renderStructure(this.manifest['structures'], [], '')
         this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${videoStructure}</div><div class='av-controls'>${videoElement}</div></div>` 
-        this.bindStructureClick()
-        
+   
         // Activate MediaElement
         var player = new MediaElementPlayer('iiif-av-player', {})
+
+        // Start listening for changes in the hash
+        this.bindHashChange()
     }
 }
