@@ -3,9 +3,21 @@ export default class MediaPlayer {
         this.manifest = options.manifest
         this.target = document.getElementById(options.target)
         this.render()
-        //this.bindHashChange()
+        this.getLinks()
     }
 
+    getLinks() {
+        $('.canvas-range').each((el) => {
+            try {
+                //console.log(this.getExtentForCanvas($('.canvas-range')[el],[],[]))
+                console.log( $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href','#t=' + this.getExtentForCanvas($('.canvas-range')[el],[],[])))
+            } catch (e)
+            {
+                console.log(e)
+            }
+        })
+    }
+    
     getSubtitles () {
         var subtitle
         this.manifest.content[0].items.forEach((item) => {
@@ -47,31 +59,50 @@ export default class MediaPlayer {
                 return undefined
             }
         } else {
+            
             return undefined
         }
     }
     
-    renderStructure (manifest, list, canvasId) {
-        // Recurses the manifest structure and creates an html tree 
-        manifest.map((data,index) => {
+    createStructure (manifest, list, canvasId) {
+        // Recurses the manifest structure and creates an html tree
+        manifest.map((data,index) => {    
             if (data.type === 'Range') {
-                canvasId = manifest[index].members[0].id
+                if (  manifest[index].members[0].id !== undefined) {
+                    canvasId =  manifest[index].members[0].id
+                }
             }
             if (data.hasOwnProperty('members')) {
+                // Parent elements
                 if (this.getMediaFragment(canvasId) !== undefined) {
+                    
                     let mediaFragment = this.getMediaFragment(canvasId)
- 
-                    list.push(`<ul><li><a data-turbolinks='false' href="/#t=${mediaFragment.start},${mediaFragment.stop}" name="#t=${mediaFragment.start}.${mediaFragment.stop}" class="media-structure-uri" >${data.label}</a></li>`)
-                    this.renderStructure(data.members, list, canvasId)
+
+                    list.push(`<ul><li><a data-turbolinks='false' href="#t=${mediaFragment.start},${mediaFragment.stop}" name="#t=${mediaFragment.start}.${mediaFragment.stop}" class="media-structure-uri" >${data.label}</a></li>`)
+                    this.createStructure(data.members, list,canvasId)
                 } else {
-                    list.push(`<ul><li>${data.label}</li>`)
-                    this.renderStructure(data.members, list, canvasId)
+                    list.push(`<ul class='canvas-range'><a data-turbolinks='false' class='canvas-url' href='#t='>${data.label}</a></li>`)
+                    this.createStructure(data.members, list,canvasId)
                 }
             }
         })
         list.push('</ul>')
         return list.join('')
     }
+
+    getExtentForCanvas(el, splits, newSplits) {
+        $(el).children().find('a').each(function() {
+           
+           var splitHref = $(this).attr('href').split('#t=')
+           
+            splitHref.forEach((split) => {
+                if (split != "") { splits.push(split) } 
+                newSplits = splits.join(',').split(',')
+            }) 
+        })
+        return `${newSplits[0]},${newSplits[newSplits.length-1]}`
+    }
+    
     
     playFromHash() {
         var mediaFragment = this.getMediaFragment(window.location.hash)
@@ -79,7 +110,7 @@ export default class MediaPlayer {
         mediaPlayer.setCurrentTime(mediaFragment.start)
         mediaPlayer.play()
         setTimeout(() => {
-           mediaPlayer.pause()
+            mediaPlayer.pause()
         }, mediaFragment.duration)
     }
     
@@ -98,9 +129,9 @@ export default class MediaPlayer {
   <source src="${mediaFragment}" type="video/mp4">
   <track kind="subtitles" src="${this.getSubtitles().id}" srclang="${this.getSubtitles().language}" >
 </video>`
-        const videoStructure = this.renderStructure(this.manifest['structures'], [], '')
+        const videoStructure = this.createStructure(this.manifest['structures'], [])
         this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${videoStructure}</div><div class='av-controls'>${videoElement}</div></div>` 
-   
+        
         // Activate MediaElement
         var player = new MediaElementPlayer('iiif-av-player', {})
 

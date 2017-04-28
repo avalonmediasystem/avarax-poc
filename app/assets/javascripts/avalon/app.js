@@ -1,6 +1,7 @@
 Avalon = {
     initialize: function () {
         this.mediaPlayer()
+        this.extents()
     },
 
     mediaPlayer: function (options) {
@@ -16,6 +17,11 @@ Avalon = {
             var options =  { 'manifest' : options.manifest, 'target' :  options.target }
             return new MediaPlayer(options)
         }
-        
+
+   
     }
 }
+
+
+
+
