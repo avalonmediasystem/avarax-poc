@@ -4,17 +4,14 @@ export default class MediaPlayer {
         this.target = document.getElementById(options.target)
         this.render()
         this.getLinks()
+        this.timer = null
     }
 
     getLinks() {
         $('.canvas-range').each((el) => {
             try {
-                //console.log(this.getExtentForCanvas($('.canvas-range')[el],[],[]))
-                console.log( $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href','#t=' + this.getExtentForCanvas($('.canvas-range')[el],[],[])))
-            } catch (e)
-            {
-                console.log(e)
-            }
+                $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href','#t=' + this.getExtentForCanvas($('.canvas-range')[el],[],[]))
+            } catch (e) {  console.log(e)  }
         })
     }
     
@@ -78,10 +75,10 @@ export default class MediaPlayer {
                     
                     let mediaFragment = this.getMediaFragment(canvasId)
 
-                    list.push(`<ul><li><a data-turbolinks='false' href="#t=${mediaFragment.start},${mediaFragment.stop}" name="#t=${mediaFragment.start}.${mediaFragment.stop}" class="media-structure-uri" >${data.label}</a></li>`)
+                    list.push(`<ul><li><a data-turbolinks='false' data-target="#" href="#t=${mediaFragment.start},${mediaFragment.stop}" class="media-structure-uri" >${data.label}</a></li>`)
                     this.createStructure(data.members, list,canvasId)
                 } else {
-                    list.push(`<ul class='canvas-range'><a data-turbolinks='false' class='canvas-url' href='#t='>${data.label}</a></li>`)
+                    list.push(`<ul class='canvas-range'><a data-target="#" data-turbolinks='false' class='canvas-url' href=''>${data.label}</a></li>`)
                     this.createStructure(data.members, list,canvasId)
                 }
             }
@@ -92,9 +89,8 @@ export default class MediaPlayer {
 
     getExtentForCanvas(el, splits, newSplits) {
         $(el).children().find('a').each(function() {
-           
            var splitHref = $(this).attr('href').split('#t=')
-           
+ 
             splitHref.forEach((split) => {
                 if (split != "") { splits.push(split) } 
                 newSplits = splits.join(',').split(',')
@@ -105,11 +101,15 @@ export default class MediaPlayer {
     
     
     playFromHash() {
+        if (this.timer) {
+            clearTimeout(this.timer)
+            this.timer = null
+        }
         var mediaFragment = this.getMediaFragment(window.location.hash)
         var mediaPlayer = document.getElementById('iiif-av-player')
         mediaPlayer.setCurrentTime(mediaFragment.start)
         mediaPlayer.play()
-        setTimeout(() => {
+        this.timer = setTimeout(() => {
             mediaPlayer.pause()
         }, mediaFragment.duration)
     }
