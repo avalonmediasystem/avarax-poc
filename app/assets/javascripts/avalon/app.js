@@ -1,38 +1,42 @@
 Avalon = {
   initialize: function () {
-    this.mediaPlayer()
+    if ($('[data-iiifav-source]').length > 0) {
+      this.mediaPlayerVideo()
+    }
+    if ($('[data-iiifav-audio-source]').length > 0) {
+      this.mediaPlayerAudio()
+    }
   },
 
-  mediaPlayer: function () {
+  createPlayer: function (options) {
     var MediaPlayer = require('avalon/media-player')
-    var $audioDiv = $('[data-iiifav-audio-source]')
-    var audioSource
+    return new MediaPlayer(options)
+  },
 
-    if ($('[data-iiifav-source]')) {
-      console.log($('[data-iiifav-source]').data().iiifavSource)
-      $.get($('[data-iiifav-source]').data().iiifavSource, (manifest) => {
-        console.log(manifest)
-        var options = {
-          'manifest': JSON.parse(manifest),
-          'target': $('[data-iiifav-source]').attr('id')
-        }
-        return new MediaPlayer(options)
-      })
-    }
+  mediaPlayerAudio: function () {
+    var options = {}
+    var manifestSource = $('[data-iiifav-audio-source]').data().iiifavAudioSource
+    console.log(manifestSource)
+    options.audio = {}
+    options.target = $('[data-iiifav-audio-source]').attr('id')
 
-    // Audio player
-    if ($audioDiv) {
-      audioSource = $audioDiv.data().iiifavAudioSource
+    $.get(manifestSource, (manifest) => {
+      console.log(manifest)
+      options.manifest = JSON.parse(manifest)
+      this.createPlayer(options)
+    })
+  },
 
-      $.get(audioSource, (manifest) => {
-        console.log(manifest)
-        let options = {
-          'audio': true,
-          'manifest': JSON.parse(manifest),
-          'target': $('[data-iiifav-audio-source]').attr('id')
-        }
-        return new MediaPlayer(options)
-      })
-    }
+  mediaPlayerVideo: function () {
+    var options = {}
+    var manifestSource = $('[data-iiifav-source]').data().iiifavSource
+    console.log(manifestSource)
+    options.target = $('[data-iiifav-source]').attr('id')
+
+    $.get(manifestSource, (manifest) => {
+      console.log(manifest)
+      options.manifest = JSON.parse(manifest)
+      this.createPlayer(options)
+    })
   }
 }

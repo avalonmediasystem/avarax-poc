@@ -3,21 +3,29 @@ export default class MediaPlayer {
     this.manifest = options.manifest
     this.target = document.getElementById(options.target)
     if (options.audio) {
-      this.renderAudio()
+      this.renderAudio(options.audio)
       return
     }
     this.render()
     this.bindStructureClick()
   }
 
-  getAudioItem () {
-    let audioItem = {}
+  // Audio player configurations
+  getAudioConfig () {
+    return {
+      audioHeight: this.manifest.height || 200,
+      audioWidth: this.manifest.width || 600
+    }
+  }
+
+  getAudioItems () {
+    let audioItems = []
     this.manifest.content[0].items[0].body[0].items.forEach((item) => {
       if (item.type === 'Audio') {
-        audioItem = item
+        audioItems.push(item)
       }
     })
-    return audioItem
+    return audioItems
   }
 
   getSubtitles () {
@@ -101,27 +109,28 @@ export default class MediaPlayer {
     this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${videoStructure}</div><div class='av-controls'>${videoElement}</div></div>`
     this.bindStructureClick()
 
+    console.log('this.target.innerHTML:' + this.target.innerHTML)
+
     // Activate MediaElement
     var player = new MediaElementPlayer('iiif-av-player', {})
   }
 
-  renderAudio () {
-    // Assume there's only one audio clip for now
-    let audioItem = this.getAudioItem()
+  renderAudio (audio) {
+    // Assume for now only one audio item, with different quality files
+    let audioItems = this.getAudioItems()
+    if (!audio.quality) { audio.quality = 'Medium' }
 
-    if (!audioItem) {
-      return
+    if (audioItems.length > 0) {
+      audioItems.forEach((item) => {
+        if (item.label === audio.quality) {
+          const audioElement = `<audio controls id="iiif-av-audio-player">
+            <source src="${item.id}" type="audio/mp3" data-quality="${item.label}">
+          </audio>`
+          this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${audioElement}</div></div>`
+
+          var audioPlayer = new MediaElementPlayer('iiif-av-audio-player', this.getAudioConfig())
+        }
+      })
     }
-    const audioElement = `<audio controls id="iiif-av-audio-player">
-      <source src="${audioItem.id}" type="audio/mp3">
-    </audio>`
-
-    this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${audioElement}</div></div>`
-
-    var audioPlayer = new MediaElementPlayer('iiif-av-audio-player', {
-      poster: audioItem.thumbnail,
-      audioHeight: 200,
-      audioWidth: 600
-    })
   }
 }
