@@ -21,6 +21,24 @@ export default class MediaPlayer {
     })
   }
 
+  // Audio player configurations
+  getAudioConfig () {
+    return {
+      audioHeight: this.manifest.height || 200,
+      audioWidth: this.manifest.width || 600
+    }
+  }
+
+  getAudioItems () {
+    let audioItems = []
+    this.manifest.content[0].items[0].body[0].items.forEach((item) => {
+      if (item.type === 'Audio') {
+        audioItems.push(item)
+      }
+    })
+    return audioItems
+  }
+
   getSubtitles () {
         /**
          * this method gets the first subtitle track from the manifest. It will probaly need to more robust in the future
@@ -34,6 +52,7 @@ export default class MediaPlayer {
         }
       })
     })
+    console.log(subtitle)
     return subtitle
   }
 
@@ -119,7 +138,7 @@ export default class MediaPlayer {
       var splitHref = $(this).attr('href').split('#t=')
 
       splitHref.forEach((split) => {
-        if (split != '') { splits.push(split) }
+        if (split !== '') { splits.push(split) }
         newSplits = splits.join(',').split(',')
       })
     })
@@ -167,5 +186,60 @@ export default class MediaPlayer {
 
         // Start listening for changes in the hash
     this.bindHashChange()
+  }
+
+  renderStructure (manifest, list, canvasId) {
+    // Recurses the manifest structure and creates an html tree
+    manifest.map((data, index) => {
+      console.log(data)
+      if (data.type === 'Range') {
+        canvasId = manifest[index].members[0].id
+      }
+      if (data.hasOwnProperty('members')) {
+        if (this.getMediaFragment(canvasId) !== undefined) {
+          console.log(canvasId)
+          let mediaFragment = this.getMediaFragment(canvasId)
+          let mediaFragmentUri = this.getVideoUri().id + mediaFragment
+          list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
+          this.renderStructure(data.members, list, canvasId)
+        } else {
+          list.push(`<ul><li>${data.label}</li>`)
+          this.renderStructure(data.members, list, canvasId)
+        }
+      }
+    })
+    list.push('</ul>')
+    return list.join('')
+  }
+
+  bindStructureClick () {
+    document.querySelectorAll('a.media-structure-uri').forEach((el) => {
+      el.addEventListener('click', () => {
+        var mediaFragment = this.getMediaFragment(el.getAttribute('data-media-fragment'))
+        var startSeconds = mediaFragment.split(',')[0]
+        var mediaPlayer = document.getElementById('iiif-av-player')
+        mediaPlayer.setCurrentTime(startSeconds)
+        mediaPlayer.play()
+      }, false)
+    })
+  }
+
+  renderAudio (audio) {
+    // Assume for now only one audio item, with different quality files
+    let audioItems = this.getAudioItems()
+    if (!audio.quality) { audio.quality = 'Medium' }
+
+    if (audioItems.length > 0) {
+      audioItems.forEach((item) => {
+        if (item.label === audio.quality) {
+          const audioElement = `<audio controls id="iiif-av-audio-player">
+            <source src="${item.id}" type="audio/mp3" data-quality="${item.label}">
+          </audio>`
+          this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${audioElement}</div></div>`
+
+          var audioPlayer = new MediaElementPlayer('iiif-av-audio-player', this.getAudioConfig())
+        }
+      })
+    }
   }
 }
