@@ -6,8 +6,7 @@ export default class MediaPlayer {
          * @param {object} options - an object with the manifest and target
          */
     this.manifest = options.manifest
-    this.target = document.getElementById(options.target)
-    this.render()
+      this.target = document.getElementById(options.target)
     this.getLinks()
   }
   getLinks () {
@@ -19,24 +18,6 @@ export default class MediaPlayer {
         $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href', '#t=' + this.getExtentForCanvas($('.canvas-range')[el], [], []))
       } catch (e) { console.log(e) }
     })
-  }
-
-  // Audio player configurations
-  getAudioConfig () {
-    return {
-      audioHeight: this.manifest.height || 200,
-      audioWidth: this.manifest.width || 600
-    }
-  }
-
-  getAudioItems () {
-    let audioItems = []
-    this.manifest.content[0].items[0].body[0].items.forEach((item) => {
-      if (item.type === 'Audio') {
-        audioItems.push(item)
-      }
-    })
-    return audioItems
   }
 
   getSubtitles () {
@@ -167,27 +148,6 @@ export default class MediaPlayer {
     }
   }
 
-  render (mediaFragment) {
-        /**
-         * @param {object} mediaFragment - a mediaFragment
-         * this method creates the video element
-         **/
-
-    if (mediaFragment === undefined) { mediaFragment = this.getVideoUri().id }
-    const videoElement = `<video class='av-player-controls' id="iiif-av-player" class="mejs__player" height="${this.manifest.height}" width="${this.manifest.width}" controls data-mejsoptions='{"pluginPath": "", "alwaysShowControls": "true"}'>
-  <source src="${mediaFragment}" type="video/mp4">
-  <track kind="subtitles" src="${this.getSubtitles().id}" srclang="${this.getSubtitles().language}" >
-</video>`
-    const videoStructure = this.createStructure(this.manifest['structures'], [])
-    this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${videoStructure}</div><div class='av-controls'>${videoElement}</div></div>`
-
-        // Activate MediaElement
-    var player = new MediaElementPlayer('iiif-av-player', {})
-
-        // Start listening for changes in the hash
-    this.bindHashChange()
-  }
-
   renderStructure (manifest, list, canvasId) {
     // Recurses the manifest structure and creates an html tree
     manifest.map((data, index) => {
@@ -210,36 +170,5 @@ export default class MediaPlayer {
     })
     list.push('</ul>')
     return list.join('')
-  }
-
-  bindStructureClick () {
-    document.querySelectorAll('a.media-structure-uri').forEach((el) => {
-      el.addEventListener('click', () => {
-        var mediaFragment = this.getMediaFragment(el.getAttribute('data-media-fragment'))
-        var startSeconds = mediaFragment.split(',')[0]
-        var mediaPlayer = document.getElementById('iiif-av-player')
-        mediaPlayer.setCurrentTime(startSeconds)
-        mediaPlayer.play()
-      }, false)
-    })
-  }
-
-  renderAudio (audio) {
-    // Assume for now only one audio item, with different quality files
-    let audioItems = this.getAudioItems()
-    if (!audio.quality) { audio.quality = 'Medium' }
-
-    if (audioItems.length > 0) {
-      audioItems.forEach((item) => {
-        if (item.label === audio.quality) {
-          const audioElement = `<audio controls id="iiif-av-audio-player">
-            <source src="${item.id}" type="audio/mp3" data-quality="${item.label}">
-          </audio>`
-          this.target.innerHTML = `<div class='av-player'><div class='av-controls'>${audioElement}</div></div>`
-
-          var audioPlayer = new MediaElementPlayer('iiif-av-audio-player', this.getAudioConfig())
-        }
-      })
-    }
   }
 }

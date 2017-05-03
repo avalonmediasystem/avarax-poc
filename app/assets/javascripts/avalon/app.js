@@ -1,25 +1,4 @@
 Avalon = {
-/*
-    initialize: function () {
-        this.mediaPlayer()
-        this.extents()
-    },
-
-    mediaPlayer: function (options) {
-	var MediaPlayer = require('avalon/media-player')
-        if ($('[data-iiifav-source]').length > 0) {
-           
-            $.get($('[data-iiifav-source]').data().iiifavSource, (manifest) => {
-                console.log(manifest)
-                var options =  { 'manifest' : JSON.parse(manifest), 'target' :  $('[data-iiifav-source]').attr('id') }
-                return new MediaPlayer(options)
-            })
-        } else {
-            var options =  { 'manifest' : options.manifest, 'target' :  options.target }
-            return new MediaPlayer(options)
-        }
-
-*/   
   initialize: function () {
     if ($('[data-iiifav-source]').length > 0) {
       this.mediaPlayerVideo()
@@ -30,10 +9,14 @@ Avalon = {
     }
   },
 
-  createPlayer: function (options) {
-    var MediaPlayer = require('avalon/media-player')
-    return new MediaPlayer(options)
+  createAudioPlayer: function (options) {
+    var AudioPlayer = require('avalon/audio-player')
+    return new AudioPlayer(options)
   },
+      createVideoPlayer: function (options) {
+    var VideoPlayer = require('avalon/video-player')
+          return new VideoPlayer(options)
+      },
 
   mediaPlayerAudio: function () {
     var options = {}
@@ -45,7 +28,7 @@ Avalon = {
     $.get(manifestSource, (manifest) => {
       console.log(manifest)
       options.manifest = JSON.parse(manifest)
-      this.createPlayer(options)
+      this.createAudioPlayer(options)
     })
   },
 
@@ -58,7 +41,8 @@ Avalon = {
     $.get(manifestSource, (manifest) => {
       console.log(manifest)
       options.manifest = JSON.parse(manifest)
-      this.createPlayer(options)
+        this.createVideoPlayer(options)
+        
     })
   }
 }

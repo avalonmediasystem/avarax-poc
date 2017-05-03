@@ -46,7 +46,7 @@ describe('an Avalon media player', () => {
   })
 
   it('creates HTML5 audio markup with default values when given a IIIF-AV manifest', () => {
-    var mediaPlayer = Avalon.createPlayer({
+    var mediaPlayer = Avalon.createAudioPlayer({
       'audio': {},
       'manifest': manifest,
       'target': 'media-player-audio-target'
@@ -64,7 +64,7 @@ describe('an Avalon media player', () => {
   })
 
   it('creates HTML5 audio markup for a High quality file', () => {
-    var mediaPlayer = Avalon.createPlayer({
+    var mediaPlayer = Avalon.createAudioPlayer({
       'audio': { quality: 'High' },
       'manifest': manifest,
       'target': 'media-player-audio-target'

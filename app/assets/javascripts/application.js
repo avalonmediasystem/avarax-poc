@@ -26,6 +26,6 @@
 //= require avalon/app
 //= require avalon/initialize
 //= require avalon/media-player
-
-
+//= require avalon/video-player
+//= require avalon/audio-player
 //= require example
