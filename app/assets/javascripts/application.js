@@ -28,4 +28,5 @@
 //= require avalon/media-player
 //= require avalon/video-player
 //= require avalon/audio-player
+//= require avalon/hash-router
 //= require example

@@ -1,3 +1,4 @@
+import HashRouter from 'avalon/hash-router'
 /** Class representing a MediaPlayer */
 export default class MediaPlayer {
   constructor (options) {
@@ -5,9 +6,10 @@ export default class MediaPlayer {
          * Create a MediaPlayer.
          * @param {object} options - an object with the manifest and target
          */
-    this.manifest = options.manifest
+      this.manifest = options.manifest
       this.target = document.getElementById(options.target)
-    this.getLinks()
+      this.getLinks()
+      this.hashRouter = new HashRouter
   }
   getLinks () {
         /**
@@ -15,7 +17,7 @@ export default class MediaPlayer {
          */
     $('.canvas-range').each((el) => {
       try {
-        $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href', '#t=' + this.getExtentForCanvas($('.canvas-range')[el], [], []))
+        $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href', '' + this.getExtentForCanvas($('.canvas-range')[el], [], []))
       } catch (e) { console.log(e) }
     })
   }
@@ -57,28 +59,6 @@ export default class MediaPlayer {
     return uri
   }
 
-  getMediaFragment (uri) {
-        /**
-         * this takes a uri with a media fragment that looks like #=120,134 and returns an object with start/stop in seconds and the duration in milliseconds
-         * @return {object}
-         */
-
-    if (uri !== undefined) {
-      const fragment = uri.split('#t=')[1]
-      if (fragment !== undefined) {
-        const splitFragment = fragment.split(',')
-        const duration = splitFragment[1] - splitFragment[0]
-        return { 'start': splitFragment[0],
-          'stop': splitFragment[1],
-          'duration': duration * 1000 }
-      } else {
-        return undefined
-      }
-    } else {
-      return undefined
-    }
-  }
-
   createStructure (manifest, list, canvasId) {
         /**
          *  Recurses the manifest structure and creates an html tree
@@ -92,10 +72,10 @@ export default class MediaPlayer {
       }
       if (data.hasOwnProperty('members')) {
                 // Parent elements
-        if (this.getMediaFragment(canvasId) !== undefined) {
-          let mediaFragment = this.getMediaFragment(canvasId)
+        if (this.hashRouter.getMediaFragment(canvasId) !== undefined) {
+          let mediaFragment = this.hashRouter.getMediaFragment(canvasId)
 
-          list.push(`<ul><li><a data-turbolinks='false' data-target="#" href="#t=${mediaFragment.start},${mediaFragment.stop}" class="media-structure-uri" >${data.label}</a></li>`)
+          list.push(`<ul><li><a data-turbolinks='false' data-target="#" href="/#avalon/time/${mediaFragment.start},${mediaFragment.stop}/quality/Medium" class="media-structure-uri" >${data.label}</a></li>`)
           this.createStructure(data.members, list, canvasId)
         } else {
           list.push(`<ul class='canvas-range'><a data-target="#" data-turbolinks='false' class='canvas-url' href=''>${data.label}</a></li>`)
@@ -126,28 +106,6 @@ export default class MediaPlayer {
     return `${newSplits[0]},${newSplits[newSplits.length - 1]}`
   }
 
-  playFromHash () {
-        /**
-         * this method will read a media fragment from a hash in the URL and then play the starting location from the hash
-         **/
-    var mediaFragment = this.getMediaFragment(window.location.hash)
-    var mediaPlayer = document.getElementById('iiif-av-player')
-    mediaPlayer.setCurrentTime(mediaFragment.start)
-    mediaPlayer.play()
-  }
-
-  bindHashChange () {
-        /**
-         * this method binds the onhashchange event and checks the location.hash if a user comes directly from a URL with a hash in it
-         **/
-    if (window.location.hash.indexOf('#t=') >= 0) {
-      this.playFromHash()
-    }
-    window.onhashchange = () => {
-      this.playFromHash()
-    }
-  }
-
   renderStructure (manifest, list, canvasId) {
     // Recurses the manifest structure and creates an html tree
     manifest.map((data, index) => {
@@ -156,10 +114,7 @@ export default class MediaPlayer {
         canvasId = manifest[index].members[0].id
       }
       if (data.hasOwnProperty('members')) {
-        if (this.getMediaFragment(canvasId) !== undefined) {
-          console.log(canvasId)
-          let mediaFragment = this.getMediaFragment(canvasId)
-          let mediaFragmentUri = this.getVideoUri().id + mediaFragment
+          if (this.hashRouter.getMediaFragment(canvasId) !== undefined) {             
           list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
           this.renderStructure(data.members, list, canvasId)
         } else {
