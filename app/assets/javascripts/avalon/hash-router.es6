@@ -12,10 +12,8 @@ export default class HashRouter {
       const fragment = uri.split('#t=')[1]
       if (fragment !== undefined) {
         const splitFragment = fragment.split(',')
-        const duration = splitFragment[1] - splitFragment[0]
         return { 'start': splitFragment[0],
-          'stop': splitFragment[1],
-          'duration': duration * 1000 }
+          'stop': splitFragment[1]}
       } else {
         return undefined
       }
