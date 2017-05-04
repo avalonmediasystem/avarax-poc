@@ -5,7 +5,6 @@ Avalon = {
     }
     if ($('[data-iiifav-audio-source]').length > 0) {
       this.mediaPlayerAudio()
-      origin/feature-play-audio
     }
   },
 
