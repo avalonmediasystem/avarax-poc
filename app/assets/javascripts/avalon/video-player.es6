@@ -6,6 +6,7 @@ export default class VideoPlayer extends MediaPlayer {
     super(options)
     this.render()
     this.hashRouter = new HashRouter({'qualityChoices': this.getQualityChoices()})
+    console.log(JSON.stringify(this.getQualityChoices()))
   }
 
   render (mediaFragment) {

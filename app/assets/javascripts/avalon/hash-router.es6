@@ -41,9 +41,8 @@ export default class HashRouter {
          * this method will read a media fragment from a hash in the URL and then play the starting location from the hash
          **/
     var mediaPlayer = document.getElementById('iiif-av-player')
-
     var options = this.processHash(hash)
-    console.log('Processed hash: ' + options.quality)
+
     this.qualityChoices.forEach((choice) => {
       if (choice.label === options.quality) {
         mediaPlayer.src = choice.id
@@ -55,6 +54,14 @@ export default class HashRouter {
   }
 
   processHash (hash) {
+        /**
+         * This method processes a window.location.hash and creates an object.
+         * It can take any number of parameters. Strings at even locations are keys
+         * and odd locations are values.
+         * Example: /key/value/someotherkey/value will give you {'key':'value','somotherkey':'value'}
+         * @param {string} hash - a window.location.hash
+         * @return {object}
+         **/
     return hash.split('/').splice(1).reduce((result, item, index, array) => {
       if (index % 2 === 0) {
         if (item === 'time') {
