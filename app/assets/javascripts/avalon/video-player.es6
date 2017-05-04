@@ -2,14 +2,13 @@ import MediaPlayer from 'avalon/media-player'
 import HashRouter from 'avalon/hash-router'
 
 export default class VideoPlayer extends MediaPlayer {
-    constructor(options) {
-        super(options)
-        this.render()
-        this.hashRouter = new HashRouter
-    }
+  constructor (options) {
+    super(options)
+    this.render()
+    this.hashRouter = new HashRouter({'qualityChoices': this.getQualityChoices()})
+  }
 
-    render (mediaFragment) {
-        console.log('rendering?')
+  render (mediaFragment) {
         /**
          * @param {object} mediaFragment - a mediaFragment
          * this method creates the video element
@@ -29,5 +28,4 @@ export default class VideoPlayer extends MediaPlayer {
         // Start listening for changes in the hash
     this.hashRouter.bindHashChange()
   }
-
 }

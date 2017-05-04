@@ -6,10 +6,10 @@ export default class MediaPlayer {
          * Create a MediaPlayer.
          * @param {object} options - an object with the manifest and target
          */
-      this.manifest = options.manifest
-      this.target = document.getElementById(options.target)
-      this.getLinks()
-      this.hashRouter = new HashRouter
+    this.manifest = options.manifest
+    this.target = document.getElementById(options.target)
+    this.getLinks()
+    this.hashRouter = new HashRouter({'qualityChoices': this.getQualityChoices()})
   }
   getLinks () {
         /**
@@ -37,6 +37,20 @@ export default class MediaPlayer {
     })
     console.log(subtitle)
     return subtitle
+  }
+
+  getQualityChoices () {
+    var choices = []
+    this.manifest.content[0].items.forEach((item) => {
+      item.body.forEach((body) => {
+        if (body.type === 'Choice') {
+          body.items.forEach((item) => {
+            choices.push(item)
+          })
+        }
+      })
+    })
+    return choices
   }
 
   getVideoUri () {
@@ -114,7 +128,7 @@ export default class MediaPlayer {
         canvasId = manifest[index].members[0].id
       }
       if (data.hasOwnProperty('members')) {
-          if (this.hashRouter.getMediaFragment(canvasId) !== undefined) {             
+        if (this.hashRouter.getMediaFragment(canvasId) !== undefined) {
           list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
           this.renderStructure(data.members, list, canvasId)
         } else {
