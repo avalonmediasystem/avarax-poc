@@ -1,15 +1,14 @@
-import HashRouter from 'avalon/hash-router'
+import HashHandler from 'avalon/hash-handler'
 /** Class representing a MediaPlayer */
 export default class MediaPlayer {
   constructor (options) {
         /**
-         * Create a MediaPlayer.
+         * Create a MediaPlayer
          * @param {object} options - an object with the manifest and target
          */
-    this.manifest = options.manifest
-    this.target = document.getElementById(options.target)
-    this.getLinks()
-    this.hashRouter = new HashRouter({'qualityChoices': this.getQualityChoices()})
+      this.manifest = options.manifest
+      this.target = document.getElementById(options.target)
+      this.getLinks()
   }
   getLinks () {
         /**
@@ -35,22 +34,21 @@ export default class MediaPlayer {
         }
       })
     })
-    console.log(subtitle)
     return subtitle
   }
 
-  getQualityChoices () {
-    var choices = []
-    this.manifest.content[0].items.forEach((item) => {
+  getQualityChoices() {
+    var choices = [] 
+      this.manifest.content[0].items.forEach((item) => {
       item.body.forEach((body) => {
         if (body.type === 'Choice') {
           body.items.forEach((item) => {
-            choices.push(item)
+             choices.push(item)
           })
         }
       })
     })
-    return choices
+return choices            
   }
 
   getVideoUri () {
@@ -73,6 +71,27 @@ export default class MediaPlayer {
     return uri
   }
 
+      getMediaFragment (uri) {
+        /**
+         * this takes a uri with a media fragment that looks like #=120,134 and returns an object with start/stop in seconds and the duration in milliseconds
+         * @return {object}
+         */
+
+        if (uri !== undefined) {
+            const fragment = uri.split('#t=')[1]
+            if (fragment !== undefined) {
+                const splitFragment = fragment.split(',')
+                const duration = splitFragment[1] - splitFragment[0]
+                return { 'start': splitFragment[0],
+                         'stop': splitFragment[1] }
+            } else {
+                return undefined
+            }
+        } else {
+            return undefined
+        }
+    }
+
   createStructure (manifest, list, canvasId) {
         /**
          *  Recurses the manifest structure and creates an html tree
@@ -86,8 +105,8 @@ export default class MediaPlayer {
       }
       if (data.hasOwnProperty('members')) {
                 // Parent elements
-        if (this.hashRouter.getMediaFragment(canvasId) !== undefined) {
-          let mediaFragment = this.hashRouter.getMediaFragment(canvasId)
+        if (this.getMediaFragment(canvasId) !== undefined) {
+          let mediaFragment = this.getMediaFragment(canvasId)
 
           list.push(`<ul><li><a data-turbolinks='false' data-target="#" href="/#avalon/time/${mediaFragment.start},${mediaFragment.stop}/quality/Medium" class="media-structure-uri" >${data.label}</a></li>`)
           this.createStructure(data.members, list, canvasId)
@@ -123,12 +142,11 @@ export default class MediaPlayer {
   renderStructure (manifest, list, canvasId) {
     // Recurses the manifest structure and creates an html tree
     manifest.map((data, index) => {
-      console.log(data)
       if (data.type === 'Range') {
         canvasId = manifest[index].members[0].id
       }
       if (data.hasOwnProperty('members')) {
-        if (this.hashRouter.getMediaFragment(canvasId) !== undefined) {
+          if (this.getMediaFragment(canvasId) !== undefined) {             
           list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
           this.renderStructure(data.members, list, canvasId)
         } else {

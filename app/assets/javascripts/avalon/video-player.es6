@@ -1,12 +1,11 @@
 import MediaPlayer from 'avalon/media-player'
-import HashRouter from 'avalon/hash-router'
+import HashHandler from 'avalon/hash-handler'
 
 export default class VideoPlayer extends MediaPlayer {
   constructor (options) {
     super(options)
+    this.hashHandler = new HashHandler({'qualityChoices': this.getQualityChoices()})
     this.render()
-    this.hashRouter = new HashRouter({'qualityChoices': this.getQualityChoices()})
-    console.log(JSON.stringify(this.getQualityChoices()))
   }
 
   render (mediaFragment) {
@@ -27,6 +26,6 @@ export default class VideoPlayer extends MediaPlayer {
     var player = new MediaElementPlayer('iiif-av-player', {})
 
         // Start listening for changes in the hash
-    this.hashRouter.bindHashChange()
+    this.hashHandler.bindHashChange()
   }
 }
