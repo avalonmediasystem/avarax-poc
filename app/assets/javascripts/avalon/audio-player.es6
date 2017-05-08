@@ -57,7 +57,7 @@ export default class AudioPlayer extends MediaPlayer {
             <div class='av-player'>
               <div class='av-controls'>${audioElement}</div>
             </div>
-            <div class="alert alert-info"><strong>TODO:</strong> Fix links below</div>
+            <div class="alert alert-info"><strong>TODO:</strong> Fix links below to target audio player instead of video (might need to break out into a separate view, or just display one player at a time?)</div>
             ${audioStructure}
           `
           let audioPlayer = new MediaElementPlayer('iiif-av-audio-player', this.getAudioConfig())
