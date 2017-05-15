@@ -1,0 +1,26 @@
+#creation-metadata {
+  dd {
+    padding-bottom: 10px;
+  }
+}
+
+#demo-audio-player {
+  .av-controls {
+    width: 100%;
+  }
+}
+
+.av-player  {
+    display:flex;
+
+}
+
+
+.av-controls ul {
+    min-width:300px;
+
+}
+
+.media-structure-uri {
+    cursor: pointer;
+}
