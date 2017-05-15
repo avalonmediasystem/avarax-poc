@@ -4,10 +4,10 @@ import HashHandler from 'avalon/hash-handler'
 */
 export default class MediaPlayer {
   constructor (options) {
-        /**
-         * Create a MediaPlayer
-         * @param {object} options - an object with the manifest and target
-         */
+    /**
+     * Create a MediaPlayer
+     * @param {object} options - an object with the manifest and target
+     */
       this.manifest = options.manifest
       this.target = document.getElementById(options.target)
       this.getLinks()
@@ -43,18 +43,18 @@ export default class MediaPlayer {
     return subtitle
   }
 
-  getQualityChoices() {
-    var choices = [] 
-      this.manifest.content[0].items.forEach((item) => {
+  getQualityChoices () {
+    var choices = []
+    if (this.manifest.content) {this.manifest.content[0].items.forEach((item) => {
       item.body.forEach((body) => {
         if (body.type === 'Choice') {
           body.items.forEach((item) => {
-             choices.push(item)
-          })
-        }
+            choices.push(item)})
+          }
+        })
       })
-    })
-return choices            
+    }
+    return choices
   }
 
   getVideoUri () {
@@ -116,7 +116,7 @@ return choices
         }
       }
       if (data.hasOwnProperty('members')) {
-                // Parent elements
+        // Parent elements
         if (this.getMediaFragment(canvasId) !== undefined) {
           let mediaFragment = this.getMediaFragment(canvasId)
 
@@ -165,7 +165,7 @@ return choices
         canvasId = manifest[index].members[0].id
       }
       if (data.hasOwnProperty('members')) {
-          if (this.getMediaFragment(canvasId) !== undefined) {             
+          if (this.getMediaFragment(canvasId) !== undefined) {
           list.push(`<ul><li><a class="media-structure-uri" data-media-fragment="${canvasId}">${data.label}</a></li>`)
           this.renderStructure(data.members, list, canvasId)
         } else {

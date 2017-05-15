@@ -12,10 +12,10 @@ Avalon = {
     var AudioPlayer = require('avalon/audio-player')
     return new AudioPlayer(options)
   },
-      createVideoPlayer: function (options) {
+  createVideoPlayer: function (options) {
     var VideoPlayer = require('avalon/video-player')
-          return new VideoPlayer(options)
-      },
+    return new VideoPlayer(options)
+  },
 
   mediaPlayerAudio: function () {
     var options = {}
@@ -40,8 +40,8 @@ Avalon = {
     $.get(manifestSource, (manifest) => {
       console.log(manifest)
       options.manifest = JSON.parse(manifest)
-        this.createVideoPlayer(options)
-        
+      this.createVideoPlayer(options)
+
     })
   }
 }
