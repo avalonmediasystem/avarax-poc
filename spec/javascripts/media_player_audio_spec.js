@@ -311,10 +311,10 @@ describe('an Avalon media audio player', () => {
     expect(mediaPlayerMarkup).toContain('<div class="av-player">')
     expect($('#media-player-audio-target')).toContainElement('div.av-player')
     expect($('.av-player')).toContainElement('div.av-controls')
-    expect($('#iiif-av-audio-player')).toContainElement('audio')
-    expect($('#iiif-av-audio-player > audio')).toHaveAttr('src', 'https://dlcs.io/iiif-av/wellcome/1/0128dccf-e2b8-4b0d-b41a-2d9edc6952f5/full/max/default.mp3')
-    expect($('.mejs__container')).toHaveAttr('style', 'width: 480px; height: 50px;')
-    expect($('#iiif-av-audio-player > audio > source')).toHaveAttr('data-quality', 'Medium')
+    expect($('#iiif-av-player')).toContainElement('audio')
+    expect($('#iiif-av-player > audio')).toHaveAttr('src', 'http://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/medium/128Kbps.mp4')
+    expect($('.mejs__container')).toHaveAttr('style', 'width: 100%; height: 50px;')
+    expect($('#iiif-av-player > audio > source')).toHaveAttr('data-quality', 'Medium')
   })
 
   it('creates HTML5 audio markup for a High quality file', () => {
@@ -325,6 +325,6 @@ describe('an Avalon media audio player', () => {
     })
     var mediaPlayerMarkup = document.getElementById('media-player-audio-target').innerHTML
     console.log('mediaPlayerMarkup', mediaPlayerMarkup)
-    expect($('#iiif-av-audio-player > audio > source')).toHaveAttr('data-quality', 'High')
+    expect($('#iiif-av-player > audio > source')).toHaveAttr('data-quality', 'High')
   })
 })
