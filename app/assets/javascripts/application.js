@@ -19,6 +19,7 @@
 //= require blacklight/blacklight
 
 
+
 //= require hyrax
 //= require almond
 //= require mediaelement/mediaelement-and-player
@@ -29,4 +30,5 @@
 //= require avalon/video-player
 //= require avalon/audio-player
 //= require avalon/hash-handler
+//= require avalon/quality-selector
 //= require example
