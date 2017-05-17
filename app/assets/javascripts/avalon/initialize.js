@@ -1,3 +1,3 @@
 Blacklight.onLoad(function () {
-  Avalon.initialize()
+        Avalon.initialize()
 })

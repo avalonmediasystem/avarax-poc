@@ -9,8 +9,7 @@ export default class MediaPlayer {
      * @param {object} options - an object with the manifest and target
      */
       this.manifest = options.manifest
-      this.target = document.getElementById(options.target)
-      this.getLinks()
+      this.target = document.getElementById(options.target)  
   }
   getLinks () {
         /**
@@ -18,11 +17,14 @@ export default class MediaPlayer {
          * 
          * @method MediaPlayer#getLinks
          */
-    $('.canvas-range').each((el) => {
-      try {
+      $('.canvas-range').each((el) => {
+          console.log(el)
+        try {
+           
         $(`.canvas-range:eq( ${el} )`).find('.canvas-url').attr('href', '' + this.getExtentForCanvas($('.canvas-range')[el], [], []))
       } catch (e) { console.log(e) }
-    })
+         })
+    
   }
 
   getSubtitles () {
@@ -120,7 +122,7 @@ export default class MediaPlayer {
         if (this.getMediaFragment(canvasId) !== undefined) {
           let mediaFragment = this.getMediaFragment(canvasId)
 
-          list.push(`<ul><li><a data-turbolinks='false' data-target="#" href="/#avalon/time/${mediaFragment.start},${mediaFragment.stop}/quality/Medium" class="media-structure-uri" >${data.label}</a></li>`)
+          list.push(`<ul><li><a data-turbolinks='false' data-target="#" href="#avalon/time/${mediaFragment.start},${mediaFragment.stop}/quality/Medium" class="media-structure-uri" >${data.label}</a></li>`)
           this.createStructure(data.members, list, canvasId)
         } else {
           list.push(`<ul class='canvas-range'><a data-target="#" data-turbolinks='false' class='canvas-url' href=''>${data.label}</a></li>`)
@@ -132,7 +134,8 @@ export default class MediaPlayer {
     return list.join('')
   }
 
-  getExtentForCanvas (el, splits, newSplits) {
+    getExtentForCanvas (el, splits, newSplits) {
+        console.log(el)
         /**
          * This method takes a jQuery selector and calculates the extent of the parent based on the duration of the children
          * 

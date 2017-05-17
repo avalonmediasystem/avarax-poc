@@ -1,4 +1,5 @@
 import MediaPlayer from 'avalon/media-player'
+import HashHandler from 'avalon/hash-handler'
 
 export default class AudioPlayer extends MediaPlayer {
   constructor (options) {
@@ -6,7 +7,10 @@ export default class AudioPlayer extends MediaPlayer {
     // Default use the first sequence to grab canvases
     this.canvases = options.manifest.sequences[0].canvases
     this.currentCanvas = this.getCanvas(this.canvases[0].id)
+    console.log(this.getQualityChoices())
+    this.hashHandler = new HashHandler({'qualityChoices': this.getQualityChoices()})
     this.render(options)
+    this.getLinks()
   }
 
   // Audio player configurations
@@ -48,7 +52,7 @@ export default class AudioPlayer extends MediaPlayer {
       audioItems.forEach((item) => {
         if (item.label === options.audio.quality) {
           const audioElement =
-            `<audio controls id="iiif-av-audio-player" width="100%">
+            `<audio controls id="iiif-av-player" width="100%">
               <source src="${item.id}" type="audio/mp3" data-quality="${item.label}">
             </audio>`
           const audioStructure = this.createStructure(this.manifest['structures'], [])
@@ -57,10 +61,12 @@ export default class AudioPlayer extends MediaPlayer {
             <div class='av-player'>
               <div class='av-controls'>${audioElement}</div>
             </div>
-            <div class="alert alert-info"><strong>TODO:</strong> Fix links below to target audio player instead of video (might need to break out into a separate view, or just display one player at a time?)</div>
             ${audioStructure}
           `
-          let audioPlayer = new MediaElementPlayer('iiif-av-audio-player', this.getAudioConfig())
+            let audioPlayer = new MediaElementPlayer('iiif-av-player', this.getAudioConfig())
+
+               // Start listening for changes in the hash
+    this.hashHandler.bindHashChange()
         }
       })
     }

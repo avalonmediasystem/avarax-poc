@@ -22,12 +22,14 @@ export default class HashHandler {
          **/
         var mediaPlayer = document.getElementById('iiif-av-player') 
         var options = this.processHash(hash)
-
+        
+        
         this.qualityChoices.forEach((choice)=> {
             if (choice.label === options.quality) {
                 mediaPlayer.src = choice.id
             }
         })
+        
         
         mediaPlayer.setCurrentTime(options.start)
         mediaPlayer.play()

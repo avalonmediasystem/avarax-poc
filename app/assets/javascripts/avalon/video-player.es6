@@ -5,7 +5,8 @@ export default class VideoPlayer extends MediaPlayer {
   constructor (options) {
     super(options)
     this.hashHandler = new HashHandler({'qualityChoices': this.getQualityChoices()})
-    this.render()
+      this.render()
+      this.getLinks()
   }
 
   render (mediaFragment) {

@@ -33,6 +33,10 @@ Rails.application.routes.draw do
   # For demonstartion purposes, serve a static IIIF-AV manifest
   get 'demo/iiifav' => 'demo#iiifav'
   get 'demo/iiifavaudio' => 'demo#iiifavaudio'
+
+  get 'demo/video' => 'demo#video_demo'
+  get 'demo/audio' => 'demo#audio_demo'
+  
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
