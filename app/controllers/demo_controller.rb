@@ -1,9 +1,4 @@
 class DemoController < ActionController::Base
-  def iiifav
-  end
-  def iiifavaudio
-  end
-
   def audio_demo
   end
 

@@ -30,10 +30,7 @@ Rails.application.routes.draw do
   end
 
 
-  # For demonstartion purposes, serve a static IIIF-AV manifest
-  get 'demo/iiifav' => 'demo#iiifav'
-  get 'demo/iiifavaudio' => 'demo#iiifavaudio'
-
+  # For demonstartion purposes
   get 'demo/video' => 'demo#video_demo'
   get 'demo/audio' => 'demo#audio_demo'
   
